@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from tensorflow.keras.models import load_model
 import numpy as np
 
-app = Flask(__name__)
+app = Flask(_name_)
+CORS(app)  # HABILITA CORS PARA TODAS LAS RUTAS
 
-# Load model
+# Cargar el modelo
 model = load_model("model/my_model.keras")
 
 @app.route("/predict", methods=["POST"])
@@ -12,6 +14,7 @@ def predict():
     data = request.json
 
     try:
+        # Recibir variables EXACTAS que tu frontend envía
         X = np.array([[ 
             data["nivel"],
             data["nota"],
@@ -20,7 +23,9 @@ def predict():
             data["respons"]
         ]], dtype=float)
 
+        # Realizar la predicción
         pred = model.predict(X)[0][0]
+
         return jsonify({"prediccion": float(pred)})
 
     except Exception as e:
@@ -31,5 +36,5 @@ def predict():
 def home():
     return "API de predicción funcionando."
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     app.run(host="0.0.0.0", port=10000)
